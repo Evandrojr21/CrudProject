@@ -3,6 +3,7 @@ package com.example.SpringRestApi.controller;
 import com.example.SpringRestApi.entity.Student;
 import com.example.SpringRestApi.exception.StudentNotFoundException;
 import com.example.SpringRestApi.repository.StudentRepository;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,9 +38,9 @@ import org.springframework.web.bind.annotation.RestController;
       return student;
   }
 
-  @PostMapping("student/add")
+  @PostMapping("/student/add")
   @ResponseStatus(code = HttpStatus.CREATED)
-  public void createStudent(@RequestBody Student student){
+  public void createStudent(@RequestBody @Valid Student student){
     repo.save(student);
   }
 

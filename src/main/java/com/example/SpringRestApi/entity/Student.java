@@ -6,6 +6,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "student")
@@ -14,12 +19,24 @@ public class Student {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
+
+  @NotEmpty(message = "The Student name cannot be empty")
+  @Size(min = 3, max = 15, message = "Invalid name")
   @Column
   private String name;
+
+
+  @Min(value = 0, message = "the percentage cannot be less than 0 ")
+  @Max(value = 100, message = "the percentage cannot be greater than 100 ")
   @Column
   private float percentage;
+
+  @NotNull(message = "The student branch cannot be null")
   @Column
   private String branch;
+
+  public Student() {
+  }
 
   public Student(Student studentData){
     this.name = studentData.name;
