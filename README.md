@@ -77,5 +77,3 @@ Change branch main to listener branch and clone the repository in a empty folder
 git clone -b Listener https://github.com/Evandrojr21/CrudProject
 ```
 open the project in Intellij and you will be able to run the application and see the messages being consumed as you send requests through the other application.
-
-### Used Tools
