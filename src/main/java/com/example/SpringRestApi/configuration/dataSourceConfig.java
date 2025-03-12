@@ -12,18 +12,15 @@ import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueReques
 @Configuration
 public class dataSourceConfig {
 
-  @Value("${spring.datasource.url}")
-  private String dbUrl;
-
   @Autowired
   private SecretsManagerClient secretsManagerClient;
 
   @Bean
   public DataSource dataSource() {
     DriverManagerDataSource dataSource = new DriverManagerDataSource();
-    dataSource.setUrl(dbUrl);
+    dataSource.setUrl(getSecret("dbUrl"));
     dataSource.setUsername(getSecret("dbUsername"));
-    dataSource.setPassword(getSecret("dbPassword"));
+    dataSource.setPassword(getSecret("dbpass"));
     return dataSource;
   }
 
