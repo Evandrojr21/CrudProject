@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
 import software.amazon.awssdk.services.sqs.model.DeleteMessageRequest;
@@ -15,7 +16,9 @@ import software.amazon.awssdk.services.sqs.model.SqsException;
 public class MessageReceiver {
   private static final Logger log = LoggerFactory.getLogger(MessageReceiver.class);
   private final SqsAsyncClient sqsAsyncClient;
-  private final String queueUrl = "http://localhost:4566/000000000000/sqsSpringRestApi";
+
+  @Value("${queueUrl}")
+  private String queueUrl;
 
   public MessageReceiver(SqsAsyncClient sqsAsyncClient) {
     this.sqsAsyncClient = sqsAsyncClient;
@@ -27,7 +30,7 @@ public class MessageReceiver {
   }
 
   private void receiveMessagesContinuously() {
-    log.info("Iniciando recebimento contínuo de mensagens...");
+    log.info("Starting continuous message reception...");
     while (true) {
       try {
         ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
@@ -40,8 +43,8 @@ public class MessageReceiver {
 
         if (messages != null && !messages.isEmpty()) {
           for (Message message : messages) {
-            log.info("Mensagem recebida: {}", message.body());
-          
+            log.info("Message received: {}", message.body());
+
             try {
                 DeleteMessageRequest deleteMessageRequest = DeleteMessageRequest.builder()
                     .queueUrl(queueUrl)
@@ -55,15 +58,15 @@ public class MessageReceiver {
 
           }
         } else {
-          log.info("Nenhuma mensagem na fila.");
+          log.info("Don't have messages in queue");
         }
 
         Thread.sleep(4000);
       } catch (SqsException e) {
-        log.error("Erro ao receber mensagens: {}", e.awsErrorDetails().errorMessage());
+        log.error("Error receiving messages: {}", e.awsErrorDetails().errorMessage());
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
-        log.error("Thread interrompida. Encerrando recebimento contínuo.");
+        log.error("Thread interrupted. Ending continuous receiving");
         break;
       }
     }
