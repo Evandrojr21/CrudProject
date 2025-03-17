@@ -9,7 +9,7 @@ import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
 @Component
 public class MessageSender {
 
-  private SqsAsyncClient sqsAsyncClient;
+  private final SqsAsyncClient sqsAsyncClient;
 
   @Value("${sqsQueueName}")
   private  String queueName;
