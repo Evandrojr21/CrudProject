@@ -1,6 +1,7 @@
 package com.example.SpringRestApi.sqs.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
@@ -10,7 +11,8 @@ public class MessageSender {
 
   private SqsAsyncClient sqsAsyncClient;
 
-  private final String queueName="sqsSpringRestApi";
+  @Value("${sqsQueueName}")
+  private  String queueName;
 
   @Autowired
   public MessageSender(SqsAsyncClient sqsAsyncClient){
