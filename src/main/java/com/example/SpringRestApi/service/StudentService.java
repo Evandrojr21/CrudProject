@@ -2,7 +2,6 @@ package com.example.SpringRestApi.service;
 
 import com.example.SpringRestApi.entity.Student;
 import com.example.SpringRestApi.exception.StudentNotFoundException;
-import com.example.SpringRestApi.mapper.StudentConvert;
 import com.example.SpringRestApi.repository.StudentRepository;
 import com.example.SpringRestApi.sqs.model.StudentUpdateMessage;
 import com.example.SpringRestApi.sqs.model.UpdateType;
@@ -22,22 +21,40 @@ public class StudentService {
   ObjectMapper objectMapper = new ObjectMapper();
 
   @Autowired
-  StudentConvert studentConvert;
-
-  @Autowired
   StudentRepository studentRepository;
 
   public StudentService(StudentRepository studentRepository) {
     this.studentRepository = studentRepository;
+
   }
 
   public List<Student> getAllStudents() {
-    return studentRepository.findAll();
+    List<Student> students = studentRepository.findAll();
+
+    try {
+      String message = objectMapper.writeValueAsString(new StudentUpdateMessage("All Students Retrieved", null, UpdateType.GET));
+      messageSender.sendMessage(message);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException("Failed to serialize message", e);
+    }
+
+    return students;
   }
 
+
   public Student getStudentById(int id) {
-    return studentRepository.findById(id)
+    Student student = studentRepository.findById(id)
         .orElseThrow(() -> new StudentNotFoundException("Student with ID " + id + " not found."));
+
+    StudentUpdateMessage studentGetMessage = new StudentUpdateMessage(student.getName(), student.getBranch(), UpdateType.GET);
+
+    try {
+      String stringMessage = objectMapper.writeValueAsString(studentGetMessage);
+      messageSender.sendMessage(stringMessage);
+    } catch (JsonProcessingException e) {
+    }
+
+    return student;
   }
 
   public void createStudent(Student student) throws JsonProcessingException {
@@ -49,12 +66,20 @@ public class StudentService {
   }
 
   public Student updateStudent(int id, Student updatedStudent) {
-    return studentRepository.findById(id).map(existingStudent -> {
+    Student student = studentRepository.findById(id).map(existingStudent -> {
       existingStudent.setName(updatedStudent.getName());
       existingStudent.setBranch(updatedStudent.getBranch());
       existingStudent.setPercentage(updatedStudent.getPercentage());
       return studentRepository.save(existingStudent);
     }).orElseThrow(() -> new StudentNotFoundException("Student with ID " + id + " not found."));
+
+    try {
+      StudentUpdateMessage studentUpdateMessage = new StudentUpdateMessage(student.getName(), student.getBranch(), UpdateType.UPDATE);
+      String stringMessage = objectMapper.writeValueAsString(studentUpdateMessage);
+      messageSender.sendMessage(stringMessage);
+    } catch (JsonProcessingException e) {
+    }
+    return student;
   }
 
   public void deleteStudent(int id) throws JsonProcessingException {
