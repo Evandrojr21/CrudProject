@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
     @GetMapping("/students")
-    public List<StudentDto> getAllStudents() throws JsonProcessingException {
+    public List<StudentDto> getAllStudents(){
       List<Student> students = studentService.getAllStudents();
       List<StudentDto> studentDtos = students.stream()
           .map(studentMapper::convertStudentToStudentDTO)
@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
     }
 
     @GetMapping("/students/{id}")
-    public StudentDto getStudentById(@PathVariable int id) throws JsonProcessingException {
+    public StudentDto getStudentById(@PathVariable int id) {
       Student student = studentService.getStudentById(id);
 
       return studentMapper.convertStudentToStudentDTO(student);
@@ -54,7 +54,7 @@ import org.springframework.web.bind.annotation.RestController;
     }
 
     @PutMapping("/students/{id}")
-    public StudentDto updateStudent(@PathVariable int id, @RequestBody StudentDto studentDto) throws JsonProcessingException {
+    public StudentDto updateStudent(@PathVariable int id, @RequestBody StudentDto studentDto){
       Student student = studentMapper.convertStudentDTOtoStudent(studentDto);
       Student updatedStudent = studentService.updateStudent(id, student);
 
