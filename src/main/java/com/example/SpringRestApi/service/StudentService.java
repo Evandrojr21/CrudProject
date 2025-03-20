@@ -3,7 +3,6 @@ package com.example.SpringRestApi.service;
 import com.example.SpringRestApi.entity.Student;
 import com.example.SpringRestApi.exception.StudentNotFoundException;
 import com.example.SpringRestApi.repository.StudentRepository;
-import com.example.SpringRestApi.sqs.model.StudentUpdateMessage;
 import com.example.SpringRestApi.sqs.model.UpdateType;
 import com.example.SpringRestApi.sqs.service.MessageSender;
 import com.fasterxml.jackson.databind.ObjectMapper;
