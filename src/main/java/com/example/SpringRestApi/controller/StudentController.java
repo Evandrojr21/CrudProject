@@ -48,7 +48,7 @@ import org.springframework.web.bind.annotation.RestController;
 
     @PostMapping("/students/")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createStudent(@RequestBody @Valid StudentDto studentDto) throws JsonProcessingException {
+    public void createStudent(@RequestBody @Valid StudentDto studentDto){
       Student student = studentMapper.convertStudentDTOtoStudent(studentDto);
       studentService.createStudent(student);
     }
@@ -62,7 +62,7 @@ import org.springframework.web.bind.annotation.RestController;
     }
 
   @DeleteMapping("/students/{id}")
-  public void removeStudent(@PathVariable int id) throws JsonProcessingException {
+  public void removeStudent(@PathVariable int id){
     studentService.deleteStudent(id);
   }
 
